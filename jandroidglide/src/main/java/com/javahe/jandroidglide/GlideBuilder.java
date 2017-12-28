@@ -78,21 +78,26 @@ public class GlideBuilder {
             diskCacheService = new FifoPriorityThreadPoolExecutor(1);
         }
 
+        //创建Glide对象之前，根据配置信息设置缓存大小
         MemorySizeCaculator caculator = new MemorySizeCaculator(context);
 
+        //1.图片缓存
         if (bitmapPool == null) {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
                 int size = caculator.getBitmapSize();
                 bitmapPool = new LruBitmapPool(size);
             } else {
+                //低于版本11的不做缓存处理（面向接口编程，适配器模式还是很常见的）
                 bitmapPool = new BitmapPoolAdapter();
             }
         }
 
+        //2.除了图片之外的缓存
         if (memoryCache == null) {
             memoryCache = new LruResourceCache(caculator.getMemoryCacheSize());
         }
 
+        //3.磁盘缓存
         if (diskCacheFacotory == null) {
             diskCacheFacotory = new InternalCacheDiskCacheFactory(context);
         }
@@ -101,7 +106,7 @@ public class GlideBuilder {
             engine = new Engine(memoryCache, diskCacheFacotory, diskCacheService, sourceService);
         }
 
-
+        //设置默认画质
         if (decodeFormat == null) {
             //默认图片画质565
             decodeFormat = DecodeFormat.DEFAULT;
