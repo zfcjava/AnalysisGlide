@@ -1,4 +1,4 @@
-package com.javahe.jandroidglide.module;
+package com.javahe.jandroidglide.load.module;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;

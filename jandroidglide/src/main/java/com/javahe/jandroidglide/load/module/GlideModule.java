@@ -1,4 +1,4 @@
-package com.javahe.jandroidglide.module;
+package com.javahe.jandroidglide.load.module;
 
 import android.content.Context;
 
@@ -7,6 +7,8 @@ import com.javahe.jandroidglide.GlideBuilder;
 
 /**
  * Created by zfc on 2017/12/28.
+ *  将GlideBuilder内容bind到Glide中
+ *
  */
 
 public interface GlideModule {
