@@ -27,8 +27,49 @@ public class GroupedLinkedHashMap<K extends Poolable, V> {
         entry.add(value);
     }
 
+    /**
+     * 这是一个环形链表，增删都是根据head进行操作
+     * @param entry
+     */
     private void makeTail(LinkedEntry<K, V> entry) {
-        
+        removeEntry(entry);
+        //通过与head交互完成head的后移操作
+        head.pre = entry.pre;
+        entry.next = head;
+        updateEntry(entry);
+    }
+
+    /**
+     * 这是一个环形链表，增删都是根据head进行操作
+     * @param entry
+     */
+    private void makeHead(LinkedEntry<K, V> entry) {
+        removeEntry(entry);
+        entry.next = head.next;
+        entry.pre = head;
+        updateEntry(entry);
+    }
+
+    /**
+     * 更新以entry基础，将另一部分链表关联上
+     * @param entry
+     * @param <K>
+     * @param <V>
+     */
+    private static <K, V> void updateEntry(LinkedEntry<K, V> entry) {
+        entry.pre.next = entry;
+        entry.next.pre = entry;
+    }
+
+    /**
+     * 执行此操作后，链表中没有对象指向entry，只有entry指向了它的前驱和后继
+     * @param entry
+     * @param <K>
+     * @param <V>
+     */
+    private static <K, V> void removeEntry(LinkedEntry<K, V> entry) {
+        entry.pre.next = entry.next;
+        entry.next.pre = entry.pre;
     }
 
 
