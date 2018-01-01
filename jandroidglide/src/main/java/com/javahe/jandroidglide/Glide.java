@@ -45,6 +45,7 @@ public class Glide {
                     //获取应用级别的上下文
                     Context applicationContext = context.getApplicationContext();
                     GlideBuilder builder = new GlideBuilder(applicationContext);
+
                     List<GlideModule> modules = parseGlideModules(applicationContext);
 
                     for (GlideModule module : modules) {
