@@ -72,6 +72,37 @@ public class GroupedLinkedHashMap<K extends Poolable, V> {
         entry.next.pre = entry.pre;
     }
 
+    public V get(K key) {
+        LinkedEntry<K, V> entry = keyToEntry.get(key);
+        if (entry == null) {
+            //创建一个
+            entry = new LinkedEntry<>();
+            this.keyToEntry.put(key, entry);
+        } else {
+            key.offer();
+        }
+
+        this.makeHead(entry);
+        return entry.removeLast();
+    }
+
+    /**
+     * 删除掉最后的一个V
+     * @return
+     */
+    public V removeLast() {
+        for (LinkedEntry<K,V> last = head.pre;!last.equals(head);last = last.pre) {
+            V v = last.removeLast();
+            if (v != null) {
+                return v;
+            }
+            //如果该最后的entry没有“Value”可以删除了，则需要将其删除，找上一个的Value来进行删除
+            removeEntry(last);
+            keyToEntry.remove(last.key);
+            last.key.offer();
+        }
+        return null;
+    }
 
     /**
      * 内置了一个V的集合

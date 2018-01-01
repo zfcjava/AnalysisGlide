@@ -15,7 +15,7 @@ import java.util.Set;
 public class LruBitmapPool implements BitmapPool{
 
     private final int initialMaxSize;
-    private final int maxSize;
+    private  int maxSize;
     private final LruPoolStrategy strategy;
     private final Set<Bitmap.Config> allowedConfigs;
     private final NullBitmapTracker tracker;
@@ -65,11 +65,26 @@ public class LruBitmapPool implements BitmapPool{
 
     @Override
     public int getSize() {
-        return 0;
+        return maxSize;
     }
 
     @Override
+    /**
+     * 大小倍增值
+     */
     public void setSizeMultiplier(float sizeMultiplier) {
+        this.maxSize = Math.round((float) this.initialMaxSize * sizeMultiplier);
+        this.evict();
+    }
+
+    /**
+     * 重新规划缓存
+     */
+    private void evict() {
+        this.trimToSize(maxSize);
+    }
+
+    private void trimToSize(int maxSize) {
 
     }
 
@@ -103,6 +118,9 @@ public class LruBitmapPool implements BitmapPool{
         void remove(Bitmap bitmap);
     }
 
+    /**
+     * 不做任何处理
+     */
     private static class NullBitmapTracker implements BitmapTracker{
 
         @Override
