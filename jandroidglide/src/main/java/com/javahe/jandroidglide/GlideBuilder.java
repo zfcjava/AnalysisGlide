@@ -2,8 +2,6 @@ package com.javahe.jandroidglide;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
-import android.util.LruCache;
 
 import com.javahe.jandroidglide.load.DecodeFormat;
 import com.javahe.jandroidglide.load.engine.Engine;
@@ -21,6 +19,9 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * Created by zfc on 2017/12/28.
+ *
+ * 利用Buidler设计模式丰富Glide的功能属性
+ *
  */
 
 public class GlideBuilder {
