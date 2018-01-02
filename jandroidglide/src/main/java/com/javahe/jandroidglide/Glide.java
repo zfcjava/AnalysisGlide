@@ -2,15 +2,23 @@ package com.javahe.jandroidglide;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.javahe.jandroidglide.load.DecodeFormat;
 import com.javahe.jandroidglide.load.engine.Engine;
 import com.javahe.jandroidglide.load.engine.bitmap_recycle.BitmapPool;
 import com.javahe.jandroidglide.load.engine.bitmap_recycle.MemoryCache;
+import com.javahe.jandroidglide.load.engine.prefill.BitmapPreFiller;
+import com.javahe.jandroidglide.load.model.GenericLoaderFactory;
+import com.javahe.jandroidglide.load.resource.bitmap.StreamBitmapDataLoadProvider;
 import com.javahe.jandroidglide.manager.RequestManagerRetriever;
 import com.javahe.jandroidglide.load.module.GlideModule;
 import com.javahe.jandroidglide.load.module.ManifestParser;
+import com.javahe.jandroidglide.provider.DataLoadProviderRepositry;
 
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,9 +30,29 @@ public class Glide {
     private final String TAG = "Glide";
     private static volatile Glide glide;
     private static boolean moduleEnable = true;
+    private final Engine engine;
+    private final MemoryCache memoryCache;
+    private final BitmapPool bitmapPool;
+    private final DecodeFormat decodeFormat;
+    private final GenericLoaderFactory loaderFactory;
+    private final Handler mainHandler;
+    private final BitmapPreFiller bitmapPreFiller;
+    private final DataLoadProviderRepositry dataLoadProviderRepositry;
 
     //TODO 将配置信息放入到Glide当中
     public Glide(Engine engine, MemoryCache memoryCache, BitmapPool bitmapPool, Context context, DecodeFormat decodeFormat) {
+        this.engine = engine;
+        this.memoryCache = memoryCache;
+        this.bitmapPool = bitmapPool;
+        this.decodeFormat = decodeFormat;
+        loaderFactory = new GenericLoaderFactory(context);
+        mainHandler = new Handler(Looper.getMainLooper());
+        bitmapPreFiller = new BitmapPreFiller(memoryCache, bitmapPool, decodeFormat);
+        dataLoadProviderRepositry = new DataLoadProviderRepositry();
+
+        StreamBitmapDataLoadProvider streamBitmapLoadProvider = new StreamBitmapDataLoadProvider(bitmapPool, decodeFormat);
+        dataLoadProviderRepositry.register(InputStream.class, Bitmap.class, streamBitmapLoadProvider);
+
 
     }
 
